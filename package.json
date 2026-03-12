@@ -7,6 +7,10 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
+    "start": "npm --prefix express-demo run start",
+    "start:5001": "npm --prefix express-demo run start:5001",
+    "dev": "npm --prefix express-demo run dev",
+    "dev:5001": "npm --prefix express-demo run dev:5001",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
