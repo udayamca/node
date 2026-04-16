@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const config = require('config');
 const express = require('express');
 const helmet = require('helmet');
@@ -5,11 +6,16 @@ const morgan = require('morgan');
 const logger = require('./logger');
 const courses = require('./routes/courses');
 
-console.log('Application Name: ' + config.get('name'));
-console.log('Mail Server: ' + config.get('mail.host'));
-console.log('Mail Password: ' + config.get('mail.password'));
+// console.log('Application Name: ' + config.get('name'));
+// console.log('Mail Server: ' + config.get('mail.host'));
+// console.log('Mail Password: ' + config.get('mail.password'));
 
 const app = express();
+
+mongoose.connect('mongodb://localhost/vidly')
+    .then(() => console.log('Connected to MongoDB'))
+    .catch(() => console.error('Could not connect to MongoDB'));
+
 
 console.log('Node environment: ' + process.env.NODE_ENV);
 console.log('Express environment: ' + app.get('env'));

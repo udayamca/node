@@ -13,6 +13,9 @@
     "dev:5001": "npm --prefix express-demo run dev:5001",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "engines": {
+    "node": "25.7.0"
+  },
   "dependencies": {
     "mongodb": "^7.1.0"
   }

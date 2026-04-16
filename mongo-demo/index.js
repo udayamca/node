@@ -5,12 +5,50 @@ mongoose.connect('mongodb://localhost/playground')
    .catch(err => console.error('Could not connect to MongoDB...', err));
 
 const courseSchema = new mongoose.Schema({
-   name: String,
+   name: {
+      type: String,
+      required: true,
+      minLength: 5,
+      maxLength: 255,
+   },
+   category: {
+      type: String,
+      required: true,
+      enum: ['web', 'mobile'],
+      lowercase: true,
+      uppercase: false,
+      trim: true
+   },
    author: String,
-   tags: [ String ],
+   tags: {
+      type: Array,
+      // validate: { // Custom validator
+      //    validator: function (v){
+      //       return v && v.length > 0;
+      //    },
+      //    message: 'A course should have at least one value'
+      // }
+      validate: { // Promise Validator
+         validator: function(v) {
+            return new Promise((resolve) => {
+               setTimeout(() => {
+                  resolve(v && v.length > 0);
+               }, 4000);
+            });
+         },
+         message: 'A course should have at least one value'
+      }
+   },
    date: { type: Date, default: Date.now },
-   price: Number,
-   isPublished: Boolean
+   isPublished: Boolean,
+   price: {
+      type: Number,
+      required: function (){ return this.isPublished; },
+      min: 10,
+      max: 200,
+      get: v => Math.round(v),
+      set: v => Math.round(v)
+   },
 });
 
 const Course = mongoose.model('Course', courseSchema);
@@ -18,14 +56,21 @@ const Course = mongoose.model('Course', courseSchema);
 async function createCourse() {
    const course = new Course({
       name: 'Angular Course',
+      category: 'Web',
       author: 'Udaya',
-      tags: ['angular', 'frontend'],
+      tags: ['frontend'],
       isPublished: true,
-      price: 15
+      price: 15.8
    });
-
-   const result = await course.save();
-   console.log(result);
+   try {
+      const result = await course.save();
+      console.log(result);
+   } catch(er) {
+      for(field in er.errors) {
+         console.log(er.errors[field].message);
+      }
+      // console.log(er.message);
+   }
 }
 
 async function getCourses() {
@@ -51,6 +96,6 @@ async function getCourses() {
    console.log(courses);
 }
 
-// createCourse();
+createCourse();
 
-getCourses();
+// getCourses();
